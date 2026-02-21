@@ -1,11 +1,41 @@
-<div align="center">
+# New Janta Band - Static Website
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+This is a simple static website for New Janta Band, built with HTML, CSS (Tailwind via CDN), and JavaScript.
 
-  <h1>Built with AI Studio</h2>
+## Deployment
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+### 1. GitHub Pages (Static Hosting)
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+1.  **Create a new repository** on GitHub.
+2.  **Push these files** to your repository:
+    *   `index.html`
+    *   `style.css`
+    *   `script.js`
+3.  Go to your repository **Settings** -> **Pages**.
+4.  Under **Source**, select `main` (or `master`) branch and `/` (root) folder.
+5.  Click **Save**.
 
-</div>
+Your website will be live at `https://<your-username>.github.io/<repository-name>/`.
+
+### 2. AI Studio / Local Development (Node.js)
+
+This project includes a `package.json` file to run a local development server, making it compatible with AI Studio and other Node.js environments.
+
+1.  **Install dependencies**:
+    ```bash
+    npm install
+    ```
+2.  **Start the server**:
+    ```bash
+    npm run dev
+    ```
+3.  Open `http://localhost:3000` in your browser.
+
+## Features
+
+*   Responsive Design
+*   Hero Image Carousel
+*   Booking & Inquiry Forms (WhatsApp Integration)
+*   Package Selection
+*   Testimonials Section
+*   YouTube Video Integration
