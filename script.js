@@ -77,8 +77,8 @@ function initiatePayment(e) {
         return;
     }
     
-    if(amount < 500 || amount > 5000) {
-        alert('Advance amount must be between ₹500 and ₹5000');
+    if(amount < 1 || amount > 5000) {
+        alert('Advance amount must be between ₹1 and ₹5000');
         return;
     }
 
