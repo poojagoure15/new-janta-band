@@ -330,7 +330,6 @@
         </div>
     </section>
 
-    
     <!-- Inquiry Section (Not Booking) -->
     <section class="py-16 px-4 bg-slate-50 border-t border-slate-200 bg-noise">
         <div class="max-w-xl mx-auto">
@@ -346,12 +345,12 @@
                     </div>
                 </div>
                 
-                <form onsubmit="handleInquirySubmit(event)" class="space-y-5">
+                <form action="https://formspree.io/f/mykdbnve" method="POST" class="space-y-5">
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">Name / नाम</label>
                         <div class="relative">
                             <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
-                            <input type="text" id="inquiry-name" required class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="Your Name">
+                            <input type="text" id="inquiry-name" name="name" required class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="Your Name">
                         </div>
                     </div>
 
@@ -359,13 +358,13 @@
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">Mobile / मोबाइल</label>
                         <div class="relative">
                             <i data-lucide="phone" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
-                            <input type="tel" id="inquiry-mobile" required pattern="[0-9]{10}" class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="10-digit Mobile Number">
+                            <input type="tel" id="inquiry-mobile" name="mobile" required pattern="[0-9]{10}" class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="10-digit Mobile Number">
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">Message / सवाल</label>
-                        <textarea id="inquiry-message" required rows="3" class="w-full p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="Kya poochna chahte hain?"></textarea>
+                        <textarea id="inquiry-message" name="message" required rows="3" class="w-full p-4 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="Kya poochna chahte hain?"></textarea>
                     </div>
 
                     <button type="submit" class="w-full bg-slate-800 text-white py-4 rounded-lg font-bold hover:bg-slate-900 transition-all flex items-center justify-center gap-2 shadow-lg shadow-slate-800/20">
@@ -376,7 +375,6 @@
             </div>
         </div>
     </section>
-
 
     <!-- 4. Booking Form Section -->
     <section id="booking-section" class="py-20 px-4 bg-white">
@@ -393,12 +391,12 @@
                         Send Booking Request / बुकिंग भेजें
                     </h3>
                     
-                    <form onsubmit="handleBookingSubmit(event)" class="space-y-5">
+                    <form action="https://formspree.io/f/mykdbnve" method="POST" class="space-y-5">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1.5">Name / नाम</label>
                             <div class="relative">
                                 <i data-lucide="user" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
-                                <input type="text" id="booking-name" required class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="Enter your name">
+                                <input type="text" id="booking-name" name="name" required class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="Enter your name">
                             </div>
                         </div>
 
@@ -406,7 +404,7 @@
                             <label class="block text-sm font-medium text-slate-700 mb-1.5">Mobile Number / मोबाइल नंबर</label>
                             <div class="relative">
                                 <i data-lucide="phone" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
-                                <input type="tel" id="booking-mobile" required pattern="[0-9]{10}" class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="Enter mobile number">
+                                <input type="tel" id="booking-mobile" name="mobile" required pattern="[0-9]{10}" class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="Enter mobile number">
                             </div>
                         </div>
 
@@ -414,7 +412,7 @@
                             <label class="block text-sm font-medium text-slate-700 mb-1.5">Event Date / कार्यक्रम की तारीख</label>
                             <div class="relative">
                                 <i data-lucide="calendar" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none"></i>
-                                <input type="date" id="booking-date" required class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all text-slate-900">
+                                <input type="date" id="booking-date" name="date" required class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all text-slate-900">
                             </div>
                         </div>
 
@@ -422,7 +420,7 @@
                             <label class="block text-sm font-medium text-slate-700 mb-1.5">Event Location / कार्यक्रम का स्थान</label>
                             <div class="relative">
                                 <i data-lucide="map-pin" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
-                                <input type="text" id="booking-location" required class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="Village or City name">
+                                <input type="text" id="booking-location" name="location" required class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="Village or City name">
                             </div>
                         </div>
 
@@ -430,7 +428,7 @@
                             <label class="block text-sm font-medium text-slate-700 mb-1.5">Package / पैकेज</label>
                             <div class="relative">
                                 <i data-lucide="package" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
-                                <input type="text" id="booking-package" class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="Select a package from above or type here">
+                                <input type="text" id="booking-package" name="package" class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="Select a package from above or type here">
                             </div>
                         </div>
 
@@ -438,7 +436,7 @@
                             <label class="block text-sm font-medium text-slate-700 mb-1.5">Advance Amount / अग्रिम राशि (₹500 - ₹5000)</label>
                             <div class="relative">
                                 <i data-lucide="indian-rupee" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
-                                <input type="number" id="booking-amount" required min="500" max="5000" class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="Enter advance amount">
+                                <input type="number" id="booking-amount" name="amount" required min="500" max="5000" class="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="Enter advance amount">
                             </div>
                         </div>
 
@@ -617,24 +615,6 @@
             </p>
         </div>
     </footer>
-
-    <!-- Booking Confirmation Modal -->
-    <div id="booking-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/50 backdrop-blur-sm transition-opacity duration-300">
-        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 transform transition-all scale-95 opacity-0" id="booking-modal-content">
-            <div class="text-center">
-                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i data-lucide="check" class="w-8 h-8 text-green-600"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-slate-900 mb-2">Request Sent!</h3>
-                <p class="text-slate-600 mb-6">
-                    Thank you for your booking request. We have received your details on WhatsApp and will confirm your booking shortly.
-                </p>
-                <button onclick="closeBookingModal()" class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-900/20">
-                    Close / बंद करें
-                </button>
-            </div>
-        </div>
-    </div>
 
     <!-- Custom Script -->
     <script src="script.js"></script>
