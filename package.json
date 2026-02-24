@@ -2,10 +2,12 @@
   "name": "new-janta-band-static",
   "version": "1.0.0",
   "description": "Static website for New Janta Band",
+  "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
     "start": "tsx server.ts",
-    "build": "echo 'No build step required'"
+    "build": "echo 'No build step required'",
+    "lint": "eslint server.ts script.js"
   },
   "dependencies": {
     "@types/cors": "^2.8.19",
@@ -17,5 +19,13 @@
     "razorpay": "^2.9.6",
     "serve": "^14.2.4",
     "tsx": "^4.21.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
+    "eslint": "^10.0.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.1"
   }
 }

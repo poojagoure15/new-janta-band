@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import crypto from 'crypto';
 
 dotenv.config();
 
@@ -18,15 +19,21 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 // Initialize Razorpay
-// Note: In a real app, these keys should be in .env
-// For this demo, we'll use test keys if env vars are missing
-const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_YourKeyHere',
-    key_secret: process.env.RAZORPAY_KEY_SECRET || 'YourSecretHere'
-});
+let razorpay;
+try {
+    razorpay = new Razorpay({
+        key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_YourKeyHere',
+        key_secret: process.env.RAZORPAY_KEY_SECRET || 'YourSecretHere'
+    });
+} catch (error) {
+    console.error('Failed to initialize Razorpay:', error);
+}
 
 // Create Order Endpoint
 app.post('/api/create-order', async (req, res) => {
+    if (!razorpay) {
+        return res.status(500).json({ error: 'Payment gateway not initialized' });
+    }
     try {
         const { amount, currency = 'INR' } = req.body;
         
@@ -45,12 +52,17 @@ app.post('/api/create-order', async (req, res) => {
     }
 });
 
-// Verify Payment Endpoint (Optional but recommended)
+// Verify Payment Endpoint
 app.post('/api/verify-payment', (req, res) => {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
     
-    const crypto = require('crypto');
-    const hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET || 'YourSecretHere');
+    if (!process.env.RAZORPAY_KEY_SECRET && !razorpay) {
+         return res.status(500).json({ error: 'Payment gateway not initialized' });
+    }
+
+    const secret = process.env.RAZORPAY_KEY_SECRET || 'YourSecretHere';
+
+    const hmac = crypto.createHmac('sha256', secret);
     hmac.update(razorpay_order_id + "|" + razorpay_payment_id);
     const generated_signature = hmac.digest('hex');
     

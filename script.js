@@ -1,8 +1,16 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // Initialize Lucide Icons
-lucide.createIcons();
+if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+} else {
+    console.error('Lucide icons library not loaded');
+}
 
 // Set Current Year
-document.getElementById('year').textContent = new Date().getFullYear();
+const yearElement = document.getElementById('year');
+if (yearElement) {
+    yearElement.textContent = new Date().getFullYear();
+}
 
 // Hero Image Carousel
 const heroImages = [
@@ -16,26 +24,30 @@ const heroImages = [
 const carouselContainer = document.getElementById('hero-carousel');
 let currentImageIndex = 0;
 
-// Initialize Images
-heroImages.forEach((src, index) => {
-    const img = document.createElement('img');
-    img.src = src;
-    img.alt = `Hero Background ${index + 1}`;
-    img.className = `absolute inset-0 w-full h-full object-cover carousel-image ${index === 0 ? 'opacity-30' : 'opacity-0'}`;
-    carouselContainer.insertBefore(img, carouselContainer.firstChild); // Insert before overlays
-});
+if (carouselContainer) {
+    // Initialize Images
+    heroImages.forEach((src, index) => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = `Hero Background ${index + 1}`;
+        img.className = `absolute inset-0 w-full h-full object-cover carousel-image ${index === 0 ? 'opacity-30' : 'opacity-0'}`;
+        carouselContainer.insertBefore(img, carouselContainer.firstChild); // Insert before overlays
+    });
 
-const images = carouselContainer.querySelectorAll('img');
+    const images = carouselContainer.querySelectorAll('img');
 
-setInterval(() => {
-    images[currentImageIndex].classList.remove('opacity-30');
-    images[currentImageIndex].classList.add('opacity-0');
-    
-    currentImageIndex = (currentImageIndex + 1) % heroImages.length;
-    
-    images[currentImageIndex].classList.remove('opacity-0');
-    images[currentImageIndex].classList.add('opacity-30');
-}, 5000);
+    setInterval(() => {
+        if (images.length > 0) {
+            images[currentImageIndex].classList.remove('opacity-30');
+            images[currentImageIndex].classList.add('opacity-0');
+            
+            currentImageIndex = (currentImageIndex + 1) % heroImages.length;
+            
+            images[currentImageIndex].classList.remove('opacity-0');
+            images[currentImageIndex].classList.add('opacity-30');
+        }
+    }, 5000);
+}
 
 // Package Selection
 function selectPackage(pkgName) {
@@ -83,6 +95,8 @@ function shareLink() {
 // Inquiry Form Handler
 // Form submission is now handled by Formspree via HTML action attribute
 
+let paymentTimerInterval;
+
 // Booking Form Handler
 // Intercepts form submission to show payment modal first
 async function initiatePayment(e) {
@@ -116,6 +130,71 @@ async function initiatePayment(e) {
         alert('Total amount must be greater than or equal to advance amount');
         return;
     }
+
+    // Update Payment Modal with Amount
+    const upiId = "9522552066-4@ybl";
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=${upiId}&pn=NewJantaBand&am=${amount}&cu=INR`;
+    const upiLink = `upi://pay?pa=${upiId}&pn=NewJantaBand&am=${amount}&cu=INR`;
+
+    const modalContent = document.getElementById('payment-modal-content');
+    const qrImg = modalContent.querySelector('img');
+    const upiLinks = modalContent.querySelectorAll('a');
+    
+    qrImg.src = qrUrl;
+    upiLinks.forEach(link => link.href = upiLink);
+    
+    // Update Amount Display
+    document.getElementById('payment-modal-amount').textContent = `₹${amount}`;
+
+    // Show Payment Modal
+    const modal = document.getElementById('payment-modal');
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        modalContent.classList.remove('scale-95', 'opacity-0');
+        modalContent.classList.add('scale-100', 'opacity-100');
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }, 10);
+
+    // Start Timer
+    startPaymentTimer();
+}
+
+function startPaymentTimer() {
+    let timeLeft = 15 * 60; // 15 minutes in seconds
+    const timerElement = document.getElementById('payment-timer');
+    
+    if (!timerElement) return;
+
+    clearInterval(paymentTimerInterval);
+    
+    function updateTimer() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        
+        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        if (timeLeft <= 0) {
+            clearInterval(paymentTimerInterval);
+            timerElement.textContent = "EXPIRED";
+            timerElement.classList.add('text-red-600');
+            alert("Payment session expired. Please try again.");
+            closePaymentModal();
+        }
+        timeLeft--;
+    }
+    
+    updateTimer(); // Initial call
+    paymentTimerInterval = setInterval(updateTimer, 1000);
+}
+
+async function payWithRazorpay() {
+    if (typeof Razorpay === 'undefined') {
+        alert('Payment gateway is not loaded. Please check your internet connection.');
+        return;
+    }
+
+    const mobile = document.getElementById('booking-mobile').value;
+    const amount = document.getElementById('booking-amount').value;
 
     // Call Backend to Create Order
     try {
@@ -151,6 +230,11 @@ async function initiatePayment(e) {
                 },
                 "theme": {
                     "color": "#F59E0B"
+                },
+                "modal": {
+                    "ondismiss": function(){
+                        console.log('Checkout form closed');
+                    }
                 }
             };
             const rzp1 = new Razorpay(options);
@@ -297,7 +381,7 @@ function showSuccessModal() {
     setTimeout(() => {
         modalContent.classList.remove('scale-95', 'opacity-0');
         modalContent.classList.add('scale-100', 'opacity-100');
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
     }, 10);
 }
 
