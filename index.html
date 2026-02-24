@@ -645,7 +645,15 @@
             </button>
             <div class="text-center">
                 <h3 class="text-xl sm:text-2xl font-bold text-slate-900 mb-2">Complete Payment</h3>
-                <p class="text-sm sm:text-base text-slate-500 mb-6">Scan QR code or use UPI apps to pay</p>
+                <p class="text-sm sm:text-base text-slate-500 mb-4">Scan QR code or use UPI apps to pay</p>
+                
+                <div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-6 inline-block w-full max-w-[280px]">
+                    <p class="text-xs text-green-600 font-medium uppercase tracking-wider mb-1">Amount to Pay / भुगतान राशि</p>
+                    <p class="text-3xl font-bold text-green-700" id="payment-modal-amount">₹0</p>
+                    <p class="text-[10px] text-green-600 mt-1 flex items-center justify-center gap-1 font-medium">
+                        <i data-lucide="check-circle" class="w-3 h-3"></i> No Extra Charges / कोई अतिरिक्त शुल्क नहीं
+                    </p>
+                </div>
                 
                 <div class="bg-slate-50 p-4 sm:p-6 rounded-xl border border-slate-200 mb-6 inline-block w-full max-w-[280px]">
                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=9522552066-4@ybl&pn=NewJantaBand&am=0&cu=INR" alt="Payment QR Code" class="w-full h-auto aspect-square mx-auto mb-4 rounded-lg shadow-sm">
@@ -749,6 +757,8 @@
         </div>
     </div>
 
+    <!-- Razorpay Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <!-- Custom Script -->
     <script src="script.js"></script>
 </body>

@@ -85,7 +85,7 @@ function shareLink() {
 
 // Booking Form Handler
 // Intercepts form submission to show payment modal first
-function initiatePayment(e) {
+async function initiatePayment(e) {
     e.preventDefault();
     
     // Basic Validation
@@ -117,29 +117,76 @@ function initiatePayment(e) {
         return;
     }
 
-    // Update Payment Modal with Amount
-    const upiId = "9522552066-4@ybl";
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=upi://pay?pa=${upiId}&pn=NewJantaBand&am=${amount}&cu=INR`;
-    const upiLink = `upi://pay?pa=${upiId}&pn=NewJantaBand&am=${amount}&cu=INR`;
+    // Call Backend to Create Order
+    try {
+        const response = await fetch('/api/create-order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount, currency: 'INR' })
+        });
+        
+        const order = await response.json();
+        
+        if (order.id) {
+            // Open Razorpay Checkout
+            const options = {
+                "key": "rzp_test_YourKeyHere", // Enter the Key ID generated from the Dashboard
+                "amount": order.amount, // Amount is in currency subunits. Default currency is INR.
+                "currency": order.currency,
+                "name": "New Janta Band",
+                "description": "Booking Advance Payment",
+                "image": "https://example.com/your_logo",
+                "order_id": order.id, // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                "handler": function (response){
+                    // Verify Payment
+                    verifyPayment(response);
+                },
+                "prefill": {
+                    "name": document.getElementById('booking-name').value,
+                    "email": "customer@example.com",
+                    "contact": mobile
+                },
+                "notes": {
+                    "address": document.getElementById('booking-location').value
+                },
+                "theme": {
+                    "color": "#F59E0B"
+                }
+            };
+            const rzp1 = new Razorpay(options);
+            rzp1.open();
+        } else {
+            alert('Failed to initiate payment. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error initiating payment:', error);
+        alert('Failed to initiate payment. Please try again.');
+    }
+}
 
-    const modalContent = document.getElementById('payment-modal-content');
-    const qrImg = modalContent.querySelector('img');
-    const upiLinks = modalContent.querySelectorAll('a');
-    
-    qrImg.src = qrUrl;
-    upiLinks.forEach(link => link.href = upiLink);
-    
-    // Show amount in modal title or description if needed (optional)
-    // modalContent.querySelector('h3').textContent = `Pay ₹${amount}`;
-
-    // Show Payment Modal
-    const modal = document.getElementById('payment-modal');
-    modal.classList.remove('hidden');
-    setTimeout(() => {
-        modalContent.classList.remove('scale-95', 'opacity-0');
-        modalContent.classList.add('scale-100', 'opacity-100');
-        lucide.createIcons();
-    }, 10);
+async function verifyPayment(response) {
+    try {
+        const verifyResponse = await fetch('/api/verify-payment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+            })
+        });
+        
+        const result = await verifyResponse.json();
+        
+        if (result.status === 'success') {
+            confirmPayment(response.razorpay_payment_id);
+        } else {
+            alert('Payment verification failed.');
+        }
+    } catch (error) {
+        console.error('Error verifying payment:', error);
+        alert('Payment verification failed.');
+    }
 }
 
 function closePaymentModal() {
@@ -154,7 +201,7 @@ function closePaymentModal() {
     }, 300);
 }
 
-async function confirmPayment() {
+async function confirmPayment(txnId) {
     // 1. Generate Transaction Details
     const timestamp = Date.now();
     const dateObj = new Date(timestamp);
@@ -163,7 +210,8 @@ async function confirmPayment() {
     const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
     
     const refNumber = `INV-${timestamp.toString().slice(-6)}${random}`;
-    const txnId = `TXN${timestamp}${random}`; // Simulated Transaction ID
+    // Use actual Razorpay Payment ID if available, otherwise fallback
+    const finalTxnId = txnId || `TXN${timestamp}${random}`; 
 
     // Get Form Values
     const name = document.getElementById('booking-name').value;
@@ -177,14 +225,14 @@ async function confirmPayment() {
 
     // 2. Set Hidden Form Fields
     document.getElementById('booking-reference').value = refNumber;
-    document.getElementById('booking-transaction-id').value = txnId;
+    document.getElementById('booking-transaction-id').value = finalTxnId;
     document.getElementById('booking-remaining-amount').value = remainingAmount;
     document.getElementById('booking-payment-time').value = `${dateStr} ${timeStr}`;
     
     // 3. Populate Invoice Modal
     document.getElementById('inv-number').textContent = refNumber;
     document.getElementById('inv-date').textContent = `${dateStr} ${timeStr}`;
-    document.getElementById('inv-txn').textContent = txnId;
+    document.getElementById('inv-txn').textContent = finalTxnId;
     document.getElementById('inv-name').textContent = name;
     document.getElementById('inv-event-date').textContent = eventDate;
     document.getElementById('inv-package').textContent = pkg || 'Custom Package';
@@ -207,7 +255,8 @@ async function confirmPayment() {
         
         if (response.ok) {
             // 5. Hide Payment Modal & Show Success Modal (Invoice)
-            closePaymentModal();
+            // Note: With Razorpay, the modal closes automatically on success, so we just show the success modal
+            closePaymentModal(); // Just in case
             setTimeout(() => {
                 showSuccessModal();
                 
@@ -215,7 +264,7 @@ async function confirmPayment() {
                 const message = encodeURIComponent(
                     `*New Booking Confirmed*\n\n` +
                     `Invoice No: ${refNumber}\n` +
-                    `Txn ID: ${txnId}\n` +
+                    `Txn ID: ${finalTxnId}\n` +
                     `Name: ${name}\n` +
                     `Mobile: ${mobile}\n` +
                     `Event Date: ${eventDate}\n` +
@@ -224,7 +273,7 @@ async function confirmPayment() {
                     `Total Amount: ₹${totalAmount}\n` +
                     `Advance Paid: ₹${advanceAmount}\n` +
                     `Remaining: ₹${remainingAmount}\n` +
-                    `Payment Status: User marked as Paid`
+                    `Payment Status: Paid via Razorpay`
                 );
                 
                 const ownerPhone = "918982069314"; 

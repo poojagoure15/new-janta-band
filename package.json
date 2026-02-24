@@ -3,11 +3,19 @@
   "version": "1.0.0",
   "description": "Static website for New Janta Band",
   "scripts": {
-    "dev": "serve . -p 3000",
-    "start": "serve . -p 3000",
-    "build": "echo 'No build step required for static site'"
+    "dev": "tsx server.ts",
+    "start": "tsx server.ts",
+    "build": "echo 'No build step required'"
   },
   "dependencies": {
-    "serve": "^14.2.4"
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.3.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "razorpay": "^2.9.6",
+    "serve": "^14.2.4",
+    "tsx": "^4.21.0"
   }
 }
